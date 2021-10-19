@@ -1,0 +1,2 @@
+create table `user`(id varchar(255) not null, user_name varchar(255), email varchar(255), password varchar(255), primary key (id));
+create table `alert` (id varchar(255) not null, cause varchar(255),description varchar(255),date varchar(255),time varchar(255),location varchar(255),picture varchar(255),name varchar(255),firstname varchar(255),user_adress varchar(255),user_zipcode varchar(255),phone_number varchar(255),create_at timestamp,updated_at timestamp ,updated_by varchar(255),primary key (id));
