@@ -7,13 +7,14 @@ import java.util.Objects;
 
 public class AlertDTOMapper {
 
-    public static AlertDTO map (Alert alert){
+    public static AlertDTO map(Alert alert) {
 
-        if(Objects.isNull(alert)){
+        if (Objects.isNull(alert)) {
             return null;
         }
 
         AlertDTO result = AlertDTO.builder()
+                .id(alert.getId())
                 .cause(alert.getCause())
                 .description(alert.getDescription())
                 .city(alert.getCity())
@@ -27,7 +28,7 @@ public class AlertDTOMapper {
                 .userZipcode(alert.getUserZipcode())
                 .userAddress(alert.getUserAddress())
                 .createdAt(alert.getCreatedAt())
-                .updateBy(alert.getUpdateBy())
+                .updateBy(alert.getUpdatedBy())
                 .updatedAt(alert.getUpdatedAt())
                 .build();
 

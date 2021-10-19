@@ -8,13 +8,16 @@ import com.simplon.entity.Alert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("alert")
-@PreAuthorize("hasRole('ROLE_ADMIN)")
+//@PreAuthorize("hasRole('ROLE_ADMIN)")
 public class AlertController {
 
     @Autowired
@@ -38,11 +41,19 @@ public class AlertController {
     }
 
     @PostMapping()
-    public String saveAlert(@RequestBody AlertDTO alertDTO) throws TechnicalException {
+    public String saveAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
         String result = alertService.save(alertDTO);
 
         return result;
     }
 
+
+    @PostMapping("/fix")
+    public ResponseEntity<?> fixAlert(@CurrentSecurityContext Principal principal, @RequestBody AlertDTO alertDTO) throws TechnicalException {
+
+        ResponseEntity<?> result = alertService.alertFix(principal, alertDTO);
+
+        return ResponseEntity.ok(result);
+    }
 }

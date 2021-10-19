@@ -1,11 +1,12 @@
 package com.simplon.entity;
 
 import lombok.Data;
-import lombok.NonNull;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -47,19 +48,13 @@ public class Alert {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private boolean fix = false ;
+    private boolean fix = false;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private String updateBy;
+    private String updatedBy;
 
-    @ManyToOne
-    @JoinTable(
-            name = "user_alert",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "alert_id")})
-    private Set user;
 
 }
