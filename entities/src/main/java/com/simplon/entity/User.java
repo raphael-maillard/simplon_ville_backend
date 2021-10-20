@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,7 @@ public class User {
     @Column(unique = true,nullable = false)
     private String id;
 
-    @Pattern(regexp = "^(.+\\@.+\\..+)$", message = "{invalid.mail}")
+    @Email
     @Column(name = "email", unique = true)
     private String email;
 
@@ -29,6 +30,11 @@ public class User {
     @Column(name="user_name",nullable = false)
     private String userName;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 
     public User() {
         this.id = UUID.randomUUID().toString();

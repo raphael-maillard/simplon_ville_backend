@@ -2,10 +2,15 @@ package com.simplon.api.Controller;
 
 
 import com.simplon.api.RestEntity.UserDTO;
+import com.simplon.api.Security.CurrentUser;
+import com.simplon.api.Security.UserPrincipal;
 import com.simplon.api.Service.UserService;
+import com.simplon.api.exception.ResourceNotFoundException;
+import com.simplon.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +46,12 @@ public class UserController {
             @Valid @RequestBody UserDTO userNewLoginDTO
             ) throws Exception{
         return new ResponseEntity<>(userService.updateUser(userNewLoginDTO),HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) throws ResourceNotFoundException {
+        return userService.getCurrentUser(userPrincipal.getId());
     }
 
 }
