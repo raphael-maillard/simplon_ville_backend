@@ -2,17 +2,25 @@ package com.simplon.api.Service;
 
 
 import com.simplon.api.Mapper.UserDTOMapper;
-import com.simplon.entity.User;
-import org.apache.commons.lang3.StringUtils;
 import com.simplon.api.Repository.UserRepository;
 import com.simplon.api.RestEntity.UserDTO;
+import com.simplon.api.Security.AuthDTOs.ApiResponse;
+import com.simplon.api.Security.AuthDTOs.AuthResponseDTO;
+import com.simplon.api.Security.AuthDTOs.SignUpRequest;
+import com.simplon.api.Utils.Constants;
+import com.simplon.api.exception.BadRequestException;
+import com.simplon.api.exception.ResourceNotFoundException;
+import com.simplon.entity.AuthProvider;
+import com.simplon.entity.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.simplon.api.Utils.Constants;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.net.URI;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -21,6 +29,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserDTO getUser(UserDTO email) throws Exception {
 
@@ -78,7 +89,7 @@ public class UserService {
 
         checkEmailValidity(userNewLoginDTO.getEmail());
 
-        User user = userRepository.findByEmail(userNewLoginDTO.getEmail());
+        User user = userRepository.findByEmail(userNewLoginDTO.getEmail()).get();
 
         if(Objects.isNull(user)){
             throw new Exception("No user found with this email address");
@@ -97,6 +108,39 @@ public class UserService {
 
     }
 
+    public AuthResponseDTO signup(SignUpRequest signUpRequest){
+
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+
+        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+            throw new BadRequestException("Email address already in use.");
+        }
+
+        // Creating user's account
+        User user = new User();
+        user.setUserName(signUpRequest.getName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(signUpRequest.getPassword());
+        user.setProvider(AuthProvider.local);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        User result = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/user/me")
+                .buildAndExpand(result.getId()).toUri();
+
+        authResponseDTO.setLocation(location);
+        authResponseDTO.setApiResponse(new ApiResponse(true, "User registered successfully@"));
+        return authResponseDTO;
+    }
+
+    public User getCurrentUser(String id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with id :" + id));
+    }
+
     private boolean checkEmailValidity(String email) throws Exception {
 
         if(StringUtils.isEmpty(email) || !Pattern.matches(Constants.mailRegex,email)){
@@ -106,7 +150,9 @@ public class UserService {
     }
 
     private UserDTO getUserByEmail(String email){
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).get();
         return UserDTOMapper.map(user);
     }
+
+
 }
