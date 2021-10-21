@@ -2,6 +2,7 @@ package com.simplon.api.Service;
 
 import com.simplon.api.Repository.AlertRepository;
 import com.simplon.api.RestEntity.AlertDTO;
+import com.simplon.api.Security.UserPrincipal;
 import com.simplon.api.exception.BadRequestException;
 import com.simplon.api.exception.ResourceNotFoundException;
 import com.simplon.api.exception.TechnicalException;
@@ -9,16 +10,15 @@ import com.simplon.entity.Alert;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AlertService {
 
     @Autowired
@@ -79,19 +79,30 @@ public class AlertService {
         return (" Your incident is send ");
     }
 
-    public ResponseEntity<?> alertFix(Principal principal, AlertDTO alertDTO) throws TechnicalException {
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> alertFix(UserPrincipal userPrincipal, AlertDTO alertDTO) throws TechnicalException {
+
         if (Objects.isNull(alertDTO)) {
             throw new BadRequestException("Alert not load");
         }
 
-        Boolean result = alertRepository.fixIt(principal.getName(), LocalDateTime.now(), alertDTO.getId());
+        var status = !alertRepository.findById(alertDTO.getId()).get().isFix();
+        Integer result = alertRepository.fixIt(userPrincipal.getUsername(), LocalDateTime.now(), alertDTO.getId(), status);
 
-        if (!result) {
+        if (result == 0) {
             throw new TechnicalException("Somethings was wrong");
         }
 
         return ResponseEntity.ok(result);
 
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    public void deleteAlert( AlertDTO alertDTO) throws TechnicalException {
+        if (Objects.isNull(alertDTO)) {
+            throw new BadRequestException("Alert not load");
+        }
+        alertRepository.deleteById(alertDTO.getId());
     }
 
 
