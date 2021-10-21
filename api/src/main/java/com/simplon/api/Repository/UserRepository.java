@@ -19,4 +19,9 @@ public interface UserRepository extends JpaRepository<User,String> {
      @Modifying
      @Query(value="DELETE FROM User u WHERE u.email = :email")
      void deleteUser(@Param("email")String email);
+
+     @Transactional
+     @Modifying
+     @Query(value="UPDATE User u SET u.password = :password WHERE u.email =:email ")
+     void updateCurrentUserPassword(@Param("email")String email,@Param("password")String newPassword);
 }

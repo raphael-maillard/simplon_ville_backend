@@ -58,7 +58,7 @@ public class AlertController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping()
+    @PostMapping("/delete")
     public String deleteAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
         alertService.deleteAlert(alertDTO);

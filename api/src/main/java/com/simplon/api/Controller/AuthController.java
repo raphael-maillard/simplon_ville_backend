@@ -52,10 +52,5 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
 
-        AuthResponseDTO authResponseDTO = userService.signup(signUpRequest);
-        return  ResponseEntity.created(authResponseDTO.getLocation()).body(authResponseDTO.getApiResponse());
-    }
 }
