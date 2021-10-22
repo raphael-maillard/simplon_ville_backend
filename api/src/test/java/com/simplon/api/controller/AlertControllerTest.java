@@ -9,6 +9,8 @@ import com.simplon.api.Security.AuthDTOs.AuthResponse;
 import com.simplon.api.Security.AuthDTOs.LoginRequest;
 import com.simplon.entity.Alert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -22,7 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-public class AlertControllerIT extends AbstractIntegrationTest {
+@ExtendWith(MockitoExtension.class)
+public class AlertControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
