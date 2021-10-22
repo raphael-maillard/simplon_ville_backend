@@ -43,7 +43,7 @@ public class AlertService {
 
         Optional<Alert> result = alertRepository.findById(id);
 
-        if (Objects.isNull(result)) {
+        if (Objects.isNull(result) || result.isEmpty()) {
             throw new ResourceNotFoundException(" Alert not found");
         }
 
