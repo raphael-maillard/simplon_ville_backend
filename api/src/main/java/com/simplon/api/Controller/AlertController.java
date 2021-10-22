@@ -7,6 +7,7 @@ import com.simplon.api.Service.AlertService;
 import com.simplon.api.exception.ResourceNotFoundException;
 import com.simplon.api.exception.TechnicalException;
 import com.simplon.entity.Alert;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("alert")
+@SecurityRequirement(name = "simplon_ville")
 public class AlertController {
 
     @Autowired
@@ -34,9 +37,9 @@ public class AlertController {
     @GetMapping("/{id}")
     public ResponseEntity<Alert> getAlertById(@PathVariable String id) throws ResourceNotFoundException {
 
-        Alert result = alertService.findById(id).get();
+        Optional<Alert> result = alertService.findById(id);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(result.get());
     }
 
     @PostMapping()
@@ -59,10 +62,10 @@ public class AlertController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/delete")
-    public String deleteAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
+    public ResponseEntity<?> deleteAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
         alertService.deleteAlert(alertDTO);
 
-        return "Delete with success" + alertDTO.getId();
+        return ResponseEntity.ok("Alert delete");
     }
 }
