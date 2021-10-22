@@ -54,7 +54,7 @@ public class AlertControllerIT extends AbstractIntegrationTest {
 
         String id = "IdUnknown";
 
-        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNotFound());
+        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNoContent());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class AlertControllerIT extends AbstractIntegrationTest {
 
         String id = null;
 
-        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNotFound());
+        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNoContent());
     }
 
 
@@ -192,7 +192,7 @@ public class AlertControllerIT extends AbstractIntegrationTest {
         loginRequest.setEmail("test@test.com");
         loginRequest.setPassword("ADMIN");
 
-        Alert alert = alertRepository.findById("952546ea-dda3-40c9-83cb-53272773cea9").get();
+        Alert alert = alertRepository.findById("952546ea-dda3-40c9-83cb-53272773cea8").get();
         AlertDTO alterDTO = AlertDTO.builder()
                 .id(alert.getId())
                 .cause(alert.getCause())
