@@ -1,6 +1,9 @@
 package com.simplon.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.simplon.api.AbstractIntegrationTest;
 import com.simplon.api.Repository.AlertRepository;
@@ -8,6 +11,7 @@ import com.simplon.api.RestEntity.AlertDTO;
 import com.simplon.api.Security.AuthDTOs.AuthResponse;
 import com.simplon.api.Security.AuthDTOs.LoginRequest;
 import com.simplon.entity.Alert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,17 +37,35 @@ public class AlertControllerTest extends AbstractIntegrationTest {
     @Autowired
     private AlertRepository alertRepository;
 
+    private Object accessToken;
+
+    @BeforeEach
+    public void login() throws Exception {
+
+        Gson gson = new Gson();
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("TEST@SIMPLONVILLE.COM");
+        loginRequest.setPassword("ADMIN");
+
+        String requestJson= mappObjectToString(loginRequest);
+
+        this.mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(requestJson)).andExpect(status().isOk()).andDo(mvcResult -> {
+            AuthResponse authResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(),AuthResponse.class);
+            this.accessToken = authResponse.getAccessToken();
+        });
+    }
 
     @Test
     void getAlertsTest_returnOk() throws Exception {
 
-        this.mvc.perform(get("/alert")).andDo(print()).andExpect(status().isOk());
+        this.mvc.perform(get("/alert").header("Authorization","Bearer " +this.accessToken)).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
     void getAlertById_returnOk() throws Exception {
 
-        this.mvc.perform(get("/alert/952546ea-dda3-40c9-83cb-53272773cea9"))
+        this.mvc.perform(get("/alert/952546ea-dda3-40c9-83cb-53272773cea9").header("Authorization","Bearer " +this.accessToken))
                 .andDo(print())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("id").value("952546ea-dda3-40c9-83cb-53272773cea9"))
@@ -57,7 +79,7 @@ public class AlertControllerTest extends AbstractIntegrationTest {
 
         String id = "IdUnknown";
 
-        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNoContent());
+        this.mvc.perform(get("/alert/" + id).header("Authorization","Bearer " +this.accessToken)).andDo(print()).andExpect(status().isNoContent());
     }
 
     @Test
@@ -65,7 +87,7 @@ public class AlertControllerTest extends AbstractIntegrationTest {
 
         String id = null;
 
-        this.mvc.perform(get("/alert/" + id)).andDo(print()).andExpect(status().isNoContent());
+        this.mvc.perform(get("/alert/" + id).header("Authorization","Bearer " +this.accessToken)).andDo(print()).andExpect(status().isNoContent());
     }
 
 
@@ -224,6 +246,13 @@ public class AlertControllerTest extends AbstractIntegrationTest {
                         .content(AlertJson))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    private String mappObjectToString(Object object) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        return ow.writeValueAsString(object);
     }
 
 }

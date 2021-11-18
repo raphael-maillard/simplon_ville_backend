@@ -20,6 +20,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("alert")
 @SecurityRequirement(name = "simplon_ville")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@PreAuthorize("hasRole('USER')")
 public class AlertController {
 
     @Autowired
@@ -42,6 +44,7 @@ public class AlertController {
         return ResponseEntity.ok(result.get());
     }
 
+    @PreAuthorize("hasRole('ANONYMOUS')")
     @PostMapping()
     public String saveAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
@@ -50,8 +53,6 @@ public class AlertController {
         return result;
     }
 
-
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/fix")
     public ResponseEntity<?> fixAlert(@CurrentUser UserPrincipal userPrincipal, @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
@@ -60,7 +61,6 @@ public class AlertController {
         return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/delete")
     public ResponseEntity<?> deleteAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
