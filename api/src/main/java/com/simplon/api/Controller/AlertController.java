@@ -6,7 +6,11 @@ import com.simplon.api.Security.UserPrincipal;
 import com.simplon.api.Service.AlertService;
 import com.simplon.api.exception.ResourceNotFoundException;
 import com.simplon.api.exception.TechnicalException;
-import com.simplon.entity.Alert;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("alert")
@@ -27,23 +30,43 @@ public class AlertController {
     @Autowired
     private AlertService alertService;
 
+    @Operation(summary = "Find all Alerts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Alert Found",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AlertDTO.class))}),
+            @ApiResponse(responseCode = "204", description = "Alerts no found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized to access at the request")})
     @GetMapping("")
-    public List<Alert> getAlerts() throws ResourceNotFoundException {
+    public List<AlertDTO> getAlerts() throws ResourceNotFoundException {
 
-        List<Alert> listAlert = alertService.findAll();
+        List<AlertDTO> listAlert = alertService.findAll();
 
         return listAlert;
 
     }
 
+    @Operation(summary = "Find alert by Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Alert Found",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AlertDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid id Alert"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized to access at the request"),
+            @ApiResponse(responseCode = "404", description = "Alert not found")})
     @GetMapping("/{id}")
-    public ResponseEntity<Alert> getAlertById(@PathVariable String id) throws ResourceNotFoundException {
+    public ResponseEntity<AlertDTO> getAlertById(@PathVariable String id) throws ResourceNotFoundException {
 
-        Optional<Alert> result = alertService.findById(id);
+        AlertDTO result = alertService.findById(id);
 
-        return ResponseEntity.ok(result.get());
+        return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Create alert")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Alert created",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlertDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request the fields are not completed"),
+            @ApiResponse(responseCode = "404", description = "Alert not found")})
     @PreAuthorize("hasRole('ANONYMOUS')")
     @PostMapping()
     public String saveAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
@@ -53,14 +76,30 @@ public class AlertController {
         return result;
     }
 
+    @Operation(summary = "Change status alert by Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Alert status with success",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlertDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request "),
+            @ApiResponse(responseCode = "401", description = "Unauthorized to access at the request"),
+            @ApiResponse(responseCode = "404", description = "Alert not found")})
     @PostMapping("/fix")
     public ResponseEntity<?> fixAlert(@CurrentUser UserPrincipal userPrincipal, @RequestBody AlertDTO alertDTO) throws TechnicalException {
 
-        var result = alertService.alertFix(userPrincipal, alertDTO);
+        ResponseEntity<Integer> result = alertService.alertFix(userPrincipal, alertDTO);
 
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Delete alert by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Alert delete with success",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlertDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized to access at the request"),
+            @ApiResponse(responseCode = "404", description = "Alert not found")})
     @PostMapping("/delete")
     public ResponseEntity<?> deleteAlert(@Valid @RequestBody AlertDTO alertDTO) throws TechnicalException {
 

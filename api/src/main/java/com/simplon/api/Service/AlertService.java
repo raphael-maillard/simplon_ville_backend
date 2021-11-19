@@ -1,5 +1,6 @@
 package com.simplon.api.Service;
 
+import com.simplon.api.Mapper.AlertDTOMapper;
 import com.simplon.api.Repository.AlertRepository;
 import com.simplon.api.RestEntity.AlertDTO;
 import com.simplon.api.Security.UserPrincipal;
@@ -17,14 +18,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@PreAuthorize("hasRole('USER')")
 public class AlertService {
 
     @Autowired
     private AlertRepository alertRepository;
 
-    public List<Alert> findAll() throws ResourceNotFoundException {
+    public List<AlertDTO> findAll() throws ResourceNotFoundException {
 
         List<Alert> result = alertRepository.findAll();
 
@@ -32,10 +35,10 @@ public class AlertService {
             throw new ResourceNotFoundException("Not found alert register");
         }
 
-        return result;
+        return result.stream().map(AlertDTOMapper::map).collect(Collectors.toList());
     }
 
-    public Optional<Alert> findById(String id) throws ResourceNotFoundException {
+    public AlertDTO findById(String id) throws ResourceNotFoundException {
 
         if (StringUtils.isEmpty(id)) {
             throw new BadRequestException("Id can't be empty");
@@ -47,9 +50,10 @@ public class AlertService {
             throw new ResourceNotFoundException(" Alert not found");
         }
 
-        return result;
+        return AlertDTOMapper.map(result.get());
     }
 
+    @PreAuthorize("hasRole('ANONYMOUS')")
     public String save(AlertDTO alertDTO) throws TechnicalException {
 
         if (Objects.isNull(alertDTO)) {
@@ -79,14 +83,13 @@ public class AlertService {
         return (" Your incident is send ");
     }
 
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> alertFix(UserPrincipal userPrincipal, AlertDTO alertDTO) throws TechnicalException {
+    public ResponseEntity<Integer> alertFix(UserPrincipal userPrincipal, AlertDTO alertDTO) throws TechnicalException {
 
         if (Objects.isNull(alertDTO)) {
             throw new BadRequestException("Alert not load");
         }
 
-        var status = !alertRepository.findById(alertDTO.getId()).get().isFix();
+        boolean status = !alertRepository.findById(alertDTO.getId()).get().isFix();
         Integer result = alertRepository.fixIt(userPrincipal.getUsername(), LocalDateTime.now(), alertDTO.getId(), status);
 
         if (result == 0) {
@@ -97,13 +100,11 @@ public class AlertService {
 
     }
 
-    @PreAuthorize("hasRole('USER')")
-    public void deleteAlert( AlertDTO alertDTO) throws TechnicalException {
+    public void deleteAlert(AlertDTO alertDTO) throws TechnicalException {
         if (Objects.isNull(alertDTO)) {
             throw new BadRequestException("Alert not load");
         }
         alertRepository.deleteById(alertDTO.getId());
     }
-
 
 }

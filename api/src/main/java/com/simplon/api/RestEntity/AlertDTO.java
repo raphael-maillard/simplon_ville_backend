@@ -37,6 +37,7 @@ public class AlertDTO {
     private String userZipcode;
     private String city;
     private String phoneNumber;
+    private boolean fix;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String updateBy;

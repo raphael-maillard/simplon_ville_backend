@@ -27,6 +27,7 @@ public class AlertDTOMapper {
                 .phoneNumber(alert.getPhoneNumber())
                 .userZipcode(alert.getUserZipcode())
                 .userAddress(alert.getUserAddress())
+                .fix(alert.isFix())
                 .createdAt(alert.getCreatedAt())
                 .updateBy(alert.getUpdatedBy())
                 .updatedAt(alert.getUpdatedAt())
