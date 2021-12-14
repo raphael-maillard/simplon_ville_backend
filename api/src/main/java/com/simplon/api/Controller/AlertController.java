@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * The type Alert controller.
+ */
 @RestController
 @RequestMapping("alert")
 @SecurityRequirement(name = "simplon_ville")
@@ -30,6 +33,12 @@ public class AlertController {
     @Autowired
     private AlertService alertService;
 
+    /**
+     * Gets alerts.
+     *
+     * @return the alerts
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     @Operation(summary = "Find all Alerts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alert Found",
@@ -45,6 +54,13 @@ public class AlertController {
 
     }
 
+    /**
+     * Gets alert by id.
+     *
+     * @param id the id
+     * @return the alert by id
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     @Operation(summary = "Find alert by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alert Found",
@@ -60,6 +76,13 @@ public class AlertController {
         return ResponseEntity.ok(result);
     }
 
+    /**
+     * Save alert string.
+     *
+     * @param alertDTO the alert dto
+     * @return the string
+     * @throws TechnicalException the technical exception
+     */
     @Operation(summary = "Create alert")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Alert created",
@@ -76,6 +99,14 @@ public class AlertController {
         return result;
     }
 
+    /**
+     * Fix alert response entity.
+     *
+     * @param userPrincipal the user principal
+     * @param alertDTO      the alert dto
+     * @return the response entity
+     * @throws TechnicalException the technical exception
+     */
     @Operation(summary = "Change status alert by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alert status with success",
@@ -92,6 +123,13 @@ public class AlertController {
         return ResponseEntity.ok(result);
     }
 
+    /**
+     * Delete alert response entity.
+     *
+     * @param alertDTO the alert dto
+     * @return the response entity
+     * @throws TechnicalException the technical exception
+     */
     @Operation(summary = "Delete alert by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alert delete with success",

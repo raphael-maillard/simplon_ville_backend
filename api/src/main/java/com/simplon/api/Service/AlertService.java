@@ -20,6 +20,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Alert service.
+ */
 @Service
 @PreAuthorize("hasRole('USER')")
 public class AlertService {
@@ -27,6 +30,12 @@ public class AlertService {
     @Autowired
     private AlertRepository alertRepository;
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     public List<AlertDTO> findAll() throws ResourceNotFoundException {
 
         List<Alert> result = alertRepository.findAll();
@@ -38,6 +47,13 @@ public class AlertService {
         return result.stream().map(AlertDTOMapper::map).collect(Collectors.toList());
     }
 
+    /**
+     * Find by id alert dto.
+     *
+     * @param id the id
+     * @return the alert dto
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     public AlertDTO findById(String id) throws ResourceNotFoundException {
 
         if (StringUtils.isEmpty(id)) {
@@ -53,6 +69,13 @@ public class AlertService {
         return AlertDTOMapper.map(result.get());
     }
 
+    /**
+     * Save string.
+     *
+     * @param alertDTO the alert dto
+     * @return the string
+     * @throws TechnicalException the technical exception
+     */
     @PreAuthorize("hasRole('ANONYMOUS')")
     public String save(AlertDTO alertDTO) throws TechnicalException {
 
@@ -83,6 +106,14 @@ public class AlertService {
         return (" Your incident is send ");
     }
 
+    /**
+     * Alert fix response entity.
+     *
+     * @param userPrincipal the user principal
+     * @param alertDTO      the alert dto
+     * @return the response entity
+     * @throws TechnicalException the technical exception
+     */
     public ResponseEntity<Integer> alertFix(UserPrincipal userPrincipal, AlertDTO alertDTO) throws TechnicalException {
 
         if (Objects.isNull(alertDTO)) {
@@ -100,6 +131,12 @@ public class AlertService {
 
     }
 
+    /**
+     * Delete alert.
+     *
+     * @param alertDTO the alert dto
+     * @throws TechnicalException the technical exception
+     */
     public void deleteAlert(AlertDTO alertDTO) throws TechnicalException {
         if (Objects.isNull(alertDTO)) {
             throw new BadRequestException("Alert not load");

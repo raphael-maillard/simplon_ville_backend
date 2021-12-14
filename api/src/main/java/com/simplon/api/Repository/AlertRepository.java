@@ -9,9 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * The interface Alert repository.
+ */
 @Repository
 public interface AlertRepository extends JpaRepository<Alert, String> {
 
+    /**
+     * Fix it integer.
+     *
+     * @param name   the name
+     * @param now    the now
+     * @param id     the id
+     * @param status the status
+     * @return the integer
+     */
     @Transactional
     @Modifying
     @Query(value = "UPDATE Alert alert SET alert.fix= :status, alert.updatedBy= :name, alert.updatedAt = :now WHERE alert.id = :id ")

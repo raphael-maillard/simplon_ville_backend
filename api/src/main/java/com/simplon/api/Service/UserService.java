@@ -4,10 +4,6 @@ package com.simplon.api.Service;
 import com.simplon.api.Mapper.UserDTOMapper;
 import com.simplon.api.Repository.UserRepository;
 import com.simplon.api.RestEntity.UserDTO;
-import com.simplon.api.Security.AuthDTOs.ApiResponse;
-import com.simplon.api.Security.AuthDTOs.AuthResponseDTO;
-import com.simplon.api.Security.AuthDTOs.SignUpRequest;
-import com.simplon.api.Security.RestAuthenticationEntryPoint;
 import com.simplon.api.Security.UserPrincipal;
 import com.simplon.api.Utils.Constants;
 import com.simplon.api.exception.BadRequestException;
@@ -22,15 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * The type User service.
+ */
 @Service
 public class UserService {
 
@@ -40,6 +37,13 @@ public class UserService {
     private UserRepository userRepository;
 
 
+    /**
+     * Gets user.
+     *
+     * @param email the email
+     * @return the user
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     public UserDTO getUser(UserDTO email) throws ResourceNotFoundException {
 
        checkEmailValidity(email.getEmail());
@@ -55,6 +59,14 @@ public class UserService {
     }
 
 
+    /**
+     * Save user boolean.
+     *
+     * @param userDTO the user dto
+     * @return the boolean
+     * @throws BadRequestException the bad request exception
+     * @throws TechnicalException  the technical exception
+     */
     public Boolean saveUser(UserDTO userDTO)throws BadRequestException,TechnicalException{
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -78,6 +90,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Delete user boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     * @throws TechnicalException the technical exception
+     */
     @Transactional
     public Boolean deleteUser(UserDTO email)throws TechnicalException{
 
@@ -91,6 +110,15 @@ public class UserService {
         }
     }
 
+    /**
+     * Update user boolean.
+     *
+     * @param userNewLoginDTO the user new login dto
+     * @param currentUser     the current user
+     * @return the boolean
+     * @throws BadRequestException the bad request exception
+     * @throws TechnicalException  the technical exception
+     */
     public Boolean updateUser(UserDTO userNewLoginDTO, UserPrincipal currentUser) throws BadRequestException, TechnicalException {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -108,11 +136,21 @@ public class UserService {
 
     }
 
+    /**
+     * Gets current user.
+     *
+     * @param id the id
+     * @return the current user
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     public User getCurrentUser(String id) throws ResourceNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No user found with id :" + id));
     }
 
+    /**
+     * Reset default user.
+     */
     @PostConstruct
     public void resetDefaultUser(){
         logger.info("[ResetDefaultUser] Searching for default user");

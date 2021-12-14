@@ -15,11 +15,22 @@ public interface UserRepository extends JpaRepository<User,String> {
 
      Boolean existsByEmail(String email);
 
+     /**
+      * Delete user.
+      *
+      * @param email the email
+      */
      @Transactional
      @Modifying
      @Query(value="DELETE FROM User u WHERE u.email = :email")
      void deleteUser(@Param("email")String email);
 
+     /**
+      * Update current user password.
+      *
+      * @param email       the email
+      * @param newPassword the new password
+      */
      @Transactional
      @Modifying
      @Query(value="UPDATE User u SET u.password = :password WHERE u.email =:email ")

@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * The type User controller.
+ */
 @RestController
 @RequestMapping("user")
 @PreAuthorize("hasRole('USER')")
@@ -30,12 +33,27 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Gets user.
+     *
+     * @param email the email
+     * @return the user
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     @PostMapping("")
     public ResponseEntity<UserDTO> getUser(
             @Valid @RequestBody UserDTO email) throws ResourceNotFoundException {
         return new ResponseEntity<>(userService.getUser(email), HttpStatus.OK);
     }
 
+    /**
+     * Create user response entity.
+     *
+     * @param userParameterDTO the user parameter dto
+     * @return the response entity
+     * @throws BadRequestException the bad request exception
+     * @throws TechnicalException  the technical exception
+     */
     @Operation(summary = "Create user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created",
@@ -49,6 +67,13 @@ public class UserController {
         return new ResponseEntity<>(userService.saveUser(userParameterDTO), HttpStatus.CREATED);
     }
 
+    /**
+     * Delete user response entity.
+     *
+     * @param email the email
+     * @return the response entity
+     * @throws TechnicalException the technical exception
+     */
     @Operation(summary = "Delete user by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User delete with success"),
@@ -61,6 +86,15 @@ public class UserController {
         return new ResponseEntity<>(userService.deleteUser(email), HttpStatus.OK);
     }
 
+    /**
+     * Update user password response entity.
+     *
+     * @param userNewLoginDTO the user new login dto
+     * @param currentUser     the current user
+     * @return the response entity
+     * @throws BadRequestException the bad request exception
+     * @throws TechnicalException  the technical exception
+     */
     @Operation(summary = "Update password user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password update with success",
@@ -77,6 +111,13 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(userNewLoginDTO, currentUser), HttpStatus.OK);
     }
 
+    /**
+     * Gets current user.
+     *
+     * @param userPrincipal the user principal
+     * @return the current user
+     * @throws ResourceNotFoundException the resource not found exception
+     */
     @Operation(summary = "Return yourself information account")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alert Found",

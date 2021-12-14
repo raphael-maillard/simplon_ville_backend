@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * The type Auth controller.
+ */
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = {"http://localhost:4200", "https://simplonville-dashboard-front.herokuapp.com/"})
@@ -34,6 +37,12 @@ public class AuthController {
     @Autowired
     private TokenProvider tokenProvider;
 
+    /**
+     * Authenticate user response entity.
+     *
+     * @param loginRequest the login request
+     * @return the response entity
+     */
     @Operation(summary = "Login part")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login with success, the api return token",
