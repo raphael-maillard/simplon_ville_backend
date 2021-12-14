@@ -60,3 +60,9 @@ springdoc:
   api-docs:
     path: /api-docs
 
+server:
+  port: 8443
+  ssl:
+    key-store: api/src/main/resources/bootsecurity.p12
+    key-store-password: springsecurity
+    keyStoreType: PKCS12
