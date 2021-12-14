@@ -6,25 +6,16 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.simplon.api.AbstractIntegrationTest;
-import com.simplon.api.RestEntity.UserDTO;
-import com.simplon.api.Security.AuthDTOs.AuthResponse;
-import com.simplon.api.Security.AuthDTOs.LoginRequest;
-import com.simplon.api.Security.Services.TokenProvider;
-import com.simplon.api.Service.UserService;
-
-
-import org.junit.jupiter.api.BeforeAll;
+import com.simplon.api.restEntity.UserDTO;
+import com.simplon.api.security.AuthDTOs.AuthResponse;
+import com.simplon.api.security.AuthDTOs.LoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

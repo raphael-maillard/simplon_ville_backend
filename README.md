@@ -53,7 +53,7 @@ mvn spring-boot:run
     mvn compile
   ````
 
-###Database
+### Database
 
 * Database is provided in a docker container
 * You must have the last version of docker installed and docker-compose

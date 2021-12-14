@@ -1,6 +1,6 @@
 package com.simplon.api;
 
-import com.simplon.api.Config.AppProperties;
+import com.simplon.api.config.AppProperties;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
