@@ -85,6 +85,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized to access at the request")})
     @GetMapping("/me")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) throws ResourceNotFoundException {
+
         return userService.getCurrentUser(userPrincipal.getId());
     }
 
