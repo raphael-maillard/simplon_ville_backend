@@ -1,15 +1,18 @@
 # Use root/example as user/password credentials
-version: '3.1'
+version: '3.8'
 services:
   db-simplon:
+    container_name: db-simplon
     image: mysql
     #    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: example
-    volumes:
-      - ./database:/var/lib/mysql
+    #volumes:
+    #  - ./database:/var/lib/mysql
     ports:
       - "3306:3306"
+    #networks:
+    #  - backend
 
   phpmyadmin-simplon:
     image: phpmyadmin
@@ -17,3 +20,21 @@ services:
       - "8008:80"
     environment:
       - PMA_ARBITRARY=1
+    #networks:
+    #  - backend
+
+  api:
+    container_name: Application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db-simplon
+    ports:
+      - "8080:8080"
+    #networks:
+    #  - backend
+
+#networks:
+#  backend:
+#    driver: bridge

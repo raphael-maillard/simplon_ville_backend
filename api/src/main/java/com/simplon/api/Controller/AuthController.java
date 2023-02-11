@@ -25,7 +25,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:4200", "https://simplonville-dashboard-front.herokuapp.com/"})
+//@CrossOrigin(origins = {"http://localhost:4200", "https://simplonville-dashboard-front.herokuapp.com/"})
 public class AuthController {
 
     @Autowired
