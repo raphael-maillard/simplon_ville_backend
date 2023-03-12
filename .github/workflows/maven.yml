@@ -24,7 +24,15 @@ jobs:
           key: ${{ runner.os }}-m2-${{ secrets.CACHE_VERSION }}-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-${{ secrets.CACHE_VERSION }}
 
+      #- name: Build with Maven
+      #  run: mvn clean install
+
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn -B package --file pom.xml
+
+      #- name: Publish to GitHub Packages Apache Maven
+      #  run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      #  env:
+      #    GITHUB_TOKEN: ${{ github.token }}
 
 
