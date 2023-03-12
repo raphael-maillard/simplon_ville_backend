@@ -1,6 +1,7 @@
 # Use root/example as user/password credentials
 version: '3.8'
 services:
+
   db-simplon:
     container_name: db-simplon
     image: mysql
@@ -11,8 +12,9 @@ services:
     #  - ./database:/var/lib/mysql
     ports:
       - "3306:3306"
-    #networks:
-    #  - backend
+    networks:
+      backend:
+        ipv4_address: 10.5.0.5
 
   phpmyadmin-simplon:
     image: phpmyadmin
@@ -20,21 +22,47 @@ services:
       - "8008:80"
     environment:
       - PMA_ARBITRARY=1
-    #networks:
-    #  - backend
+    networks:
+      backend:
+        ipv4_address: 10.5.0.6
+
+  flyway:
+    image: boxfuse/flyway
+    volumes:
+      - ./flyway/src/main/resources/db/migration:/flyway/sql
+    command: -url=jdbc:mysql://db-simplon:3306/mysql -schemas=simplon_ville -user=root -password=example migrate
+    depends_on:
+       db-simplon:
+         condition: service_started
+    deploy:
+      restart_policy:
+        condition: on-failure
+    #healthcheck:
+    #  test: [ "CMD", "db-simplon" ,"ping", "-h", "localhost" ]
+    #  timeout: 20s
+    #  retries: 10
+    networks:
+      backend:
+        ipv4_address: 10.5.0.8
 
   api:
     container_name: Application
-    build:
+    build :
       context: .
-      dockerfile: Dockerfile
+      dockerfile: api/Dockerfile
+    image: api_simplon
     depends_on:
-      - db-simplon
+      flyway:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
-    #networks:
-    #  - backend
+    networks:
+      backend:
+        ipv4_address: 10.5.0.7
 
-#networks:
-#  backend:
-#    driver: bridge
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16

@@ -6,7 +6,7 @@
 
     <groupId>com.simplon</groupId>
     <artifactId>backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>backend</name>
     <description>Backend For simplon Application</description>
 
@@ -25,7 +25,7 @@
 
     <properties>
         <commons-collections.version>4.4</commons-collections.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-lang3.version>3.8.1</commons-lang3.version>
         <java.version>11</java.version>
         <jjwt.version>0.9.1</jjwt.version>
         <slugify.version>2.5</slugify.version>

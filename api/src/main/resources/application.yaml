@@ -2,9 +2,10 @@
 spring:
   datasource:
     #url: jdbc:mysql://localhost:3306/simplon_ville
-    url: jdbc:mysql://db-simplon:3306/simplon_ville?useSSL=false
+    url: jdbc:mysql://10.5.0.5:3306/simplon_ville?useSSL=false
     username: root
     password: example
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     properties:
