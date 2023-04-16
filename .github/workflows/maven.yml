@@ -37,8 +37,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN}}
 
-      - name: Build the Docker image and push Docker Hub
-        run: docker build . --file api/Dockerfile --tag tanra/training_first_image:$(date +%s)
+      - name: Build the Docker image
+        run: docker build . --file api/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/training_first_image:$(date +%s)
+
+      - name: Docker Push
+        run : docker push ${{ secrets.DOCKERHUB_USERNAME }}/training_first_image:$(date +%s)
 
       - name: Start Docker
         run: docker-compose -f "docker-compose.yml" up -d --build
