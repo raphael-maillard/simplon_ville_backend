@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN}}
 
       - name: Build the Docker image and push Docker Hub
-        run: docker build . --file Dockerfile --tag tanra/training_first_image:$(date +%s)
+        run: docker build . --file api/Dockerfile --tag tanra/training_first_image:$(date +%s)
 
       - name: Start Docker
         run: docker-compose -f "docker-compose.yml" up -d --build
